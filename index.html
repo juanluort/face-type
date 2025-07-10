@@ -46,10 +46,10 @@
   <div id="text" class="neutral">Tu rostro cambia la tipografía.</div>
   <video id="video" width="300" height="225" autoplay muted></video>
 
-  <!-- 1. Cargar la librería face-api.js correctamente empaquetada para navegador -->
+  <!-- Cargar librería face-api.js desde CDN -->
   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
-  <!-- 2. Código personalizado -->
+  <!-- Código personalizado -->
   <script defer>
     const video = document.getElementById('video');
     const text = document.getElementById('text');
@@ -67,8 +67,8 @@
     }
 
     Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-      faceapi.nets.faceExpressionNet.loadFromUri('/models')
+      faceapi.nets.tinyFaceDetector.loadFromUri('models'),
+      faceapi.nets.faceExpressionNet.loadFromUri('models')
     ]).then(startVideo);
 
     video.addEventListener('play', () => {
