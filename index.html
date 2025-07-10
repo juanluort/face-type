@@ -52,9 +52,10 @@
     const text = document.getElementById('text');
 
     Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-      faceapi.nets.faceExpressionNet.loadFromUri('/models')
-    ]).then(startVideo);
+  faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+  faceapi.nets.faceExpressionNet.loadFromUri('/models') // CORRECTO
+]).then(startVideo);
+
 
     function startVideo() {
       navigator.mediaDevices.getUserMedia({ video: {} })
