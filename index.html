@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,34 +17,28 @@
       height: 100vh;
       overflow: hidden;
     }
-
     #text {
       font-size: 3rem;
       transition: all 0.5s ease;
       text-align: center;
       padding: 1rem;
     }
-
     .happy {
       font-variation-settings: "wght" 800, "slnt" -10;
       color: #ffd166;
     }
-
     .sad {
       font-variation-settings: "wght" 300, "slnt" 10;
       color: #118ab2;
     }
-
     .angry {
       font-variation-settings: "wght" 900, "slnt" 0;
       color: #ef476f;
     }
-
     .neutral {
       font-variation-settings: "wght" 400, "slnt" 0;
       color: #ffffff;
     }
-
     video {
       display: none;
     }
@@ -54,10 +49,7 @@
   <div id="text" class="neutral">Tu rostro cambia la tipografía.</div>
   <video id="video" width="300" height="225" autoplay muted></video>
 
-  <!-- face-api.js -->
   <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-
-  <!-- Script de detección -->
   <script>
     window.addEventListener('load', () => {
       const video = document.getElementById('video');
