@@ -19,6 +19,7 @@
     #text {
       font-size: 3rem;
       transition: all 0.5s ease;
+      text-align: center;
     }
     .happy {
       font-variation-settings: "wght" 800, "slnt" -10;
@@ -46,53 +47,52 @@
   <div id="text" class="neutral">Tu rostro cambia la tipografía.</div>
   <video id="video" width="300" height="225" autoplay muted></video>
 
-  <!-- Cargar librería face-api.js desde CDN -->
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <!-- ✅ face-api.js debe cargarse ANTES de usar faceapi -->
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
-  <!-- Código personalizado -->
-  <script defer>
-    const video = document.getElementById('video');
-    const text = document.getElementById('text');
+  <script>
+    window.addEventListener('load', () => {
+      const video = document.getElementById('video');
+      const text = document.getElementById('text');
 
-    function startVideo() {
-      console.log('Modelos cargados, solicitando cámara…');
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          console.log('Acceso a cámara concedido.');
-          video.srcObject = stream;
-        })
-        .catch(err => {
-          console.error('Error con la cámara:', err);
-        });
-    }
+      function startVideo() {
+        console.log('Modelos cargados, solicitando cámara…');
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(stream => {
+            console.log('Acceso a cámara concedido.');
+            video.srcObject = stream;
+          })
+          .catch(err => {
+            console.error('Error con la cámara:', err);
+          });
+      }
 
-    Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri('models'),
-      faceapi.nets.faceExpressionNet.loadFromUri('models')
-    ]).then(startVideo);
+      Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('models')
+      ]).then(startVideo);
 
-    video.addEventListener('play', () => {
-      console.log('Detectando emociones...');
-      const canvas = faceapi.createCanvasFromMedia(video);
-      document.body.append(canvas);
-      const displaySize = { width: video.width, height: video.height };
-      faceapi.matchDimensions(canvas, displaySize);
+      video.addEventListener('play', () => {
+        const canvas = faceapi.createCanvasFromMedia(video);
+        document.body.append(canvas);
+        const displaySize = { width: video.width, height: video.height };
+        faceapi.matchDimensions(canvas, displaySize);
 
-      setInterval(async () => {
-        const detections = await faceapi
-          .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-          .withFaceExpressions();
+        setInterval(async () => {
+          const detections = await faceapi
+            .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+            .withFaceExpressions();
 
-        if (detections.length > 0) {
-          const expr = detections[0].expressions;
-          const dominant = Object.entries(expr).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-          console.log('Emoción detectada:', dominant);
-          text.className = ['happy', 'sad', 'angry'].includes(dominant) ? dominant : 'neutral';
-        } else {
-          console.log('Sin rostro detectado.');
-          text.className = 'neutral';
-        }
-      }, 1000);
+          if (detections.length > 0) {
+            const expr = detections[0].expressions;
+            const dominant = Object.entries(expr).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+            console.log('Emoción detectada:', dominant);
+            text.className = ['happy', 'sad', 'angry'].includes(dominant) ? dominant : 'neutral';
+          } else {
+            text.className = 'neutral';
+          }
+        }, 1000);
+      });
     });
   </script>
 </body>
