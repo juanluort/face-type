@@ -46,10 +46,11 @@
   <div id="text" class="neutral">Tu rostro cambia la tipografía.</div>
   <video id="video" width="300" height="225" autoplay muted></video>
 
-  <!-- Librería de face-api.js correctamente enlazada -->
+  <!-- 1. Cargar la librería face-api.js correctamente empaquetada para navegador -->
   <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
-  <script>
+  <!-- 2. Código personalizado -->
+  <script defer>
     const video = document.getElementById('video');
     const text = document.getElementById('text');
 
@@ -89,7 +90,7 @@
           text.className = ['happy', 'sad', 'angry'].includes(dominant) ? dominant : 'neutral';
         } else {
           console.log('Sin rostro detectado.');
-          text.className = 'neutral'; 
+          text.className = 'neutral';
         }
       }, 1000);
     });
