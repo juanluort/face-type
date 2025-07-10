@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,30 +16,41 @@
       height: 100vh;
       overflow: hidden;
     }
+
     #text {
       font-size: 3rem;
       transition: all 0.5s ease;
       text-align: center;
       padding: 1rem;
     }
+
     .happy {
       font-variation-settings: "wght" 800, "slnt" -10;
       color: #ffd166;
     }
+
     .sad {
       font-variation-settings: "wght" 300, "slnt" 10;
       color: #118ab2;
     }
+
     .angry {
       font-variation-settings: "wght" 900, "slnt" 0;
       color: #ef476f;
     }
+
     .neutral {
       font-variation-settings: "wght" 400, "slnt" 0;
       color: #ffffff;
     }
+
     video {
-      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      width: 200px;
+      border: 2px solid white;
+      z-index: 10;
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght@-10..0,300..900&display=swap" rel="stylesheet">
@@ -77,12 +87,14 @@
         faceapi.matchDimensions(canvas, displaySize);
 
         setInterval(async () => {
-          const detections = await faceapi
-            .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+          const detection = await faceapi
+            .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
             .withFaceExpressions();
 
-          if (detections.length > 0) {
-            const expr = detections[0].expressions;
+          console.log("Detección:", detection);
+
+          if (detection && detection.expressions) {
+            const expr = detection.expressions;
             const dominant = Object.entries(expr).reduce((a, b) => a[1] > b[1] ? a : b)[0];
             console.log("Emoción detectada:", dominant);
             text.className = ['happy', 'sad', 'angry'].includes(dominant) ? dominant : 'neutral';
