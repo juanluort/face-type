@@ -1,56 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FACE/TYPE</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: white;
-      font-family: 'Recursive', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    #text {
-      font-size: 3rem;
-      transition: all 0.5s ease;
-    }
-    .happy {
-      font-variation-settings: "wght" 800, "slnt" -10;
-      color: #ffd166;
-    }
-    .sad {
-      font-variation-settings: "wght" 300, "slnt" 10;
-      color: #118ab2;
-    }
-    .angry {
-      font-variation-settings: "wght" 900, "slnt" 0;
-      color: #ef476f;
-    }
-    .neutral {
-      font-variation-settings: "wght" 400, "slnt" 0;
-      color: #ffffff;
-    }
-    video {
-      display: none;
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght@-10..0,300..900&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div id="text" class="neutral">Tu rostro cambia las tipografía.</div>
-  <video id="video" width="300" height="225" autoplay muted></video>
+<!-- 1. Cargar face-api.js -->
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
-  <!-- Cargar librería face-api.js desde CDN -->
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-
-  <!-- Código personalizado -->
-  <script defer>
+<!-- 2. Tu código personalizado -->
+<script defer>
+  window.addEventListener('DOMContentLoaded', () => {
     const video = document.getElementById('video');
     const text = document.getElementById('text');
 
@@ -94,6 +47,5 @@
         }
       }, 1000);
     });
-  </script>
-</body>
-</html>
+  });
+</script>
