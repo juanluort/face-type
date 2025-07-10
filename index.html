@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FACE/TYPE</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: 'Recursive', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #text {
+      font-size: 3rem;
+      transition: all 0.5s ease;
+    }
+    .happy {
+      font-variation-settings: "wght" 800, "slnt" -10;
+      color: #ffd166;
+    }
+    .sad {
+      font-variation-settings: "wght" 300, "slnt" 10;
+      color: #118ab2;
+    }
+    .angry {
+      font-variation-settings: "wght" 900, "slnt" 0;
+      color: #ef476f;
+    }
+    .neutral {
+      font-variation-settings: "wght" 400, "slnt" 0;
+      color: #ffffff;
+    }
+    video {
+      display: none;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght@-10..0,300..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="text" class="neutral">Tu rostro cambia la tipografía.</div>
+  <video id="video" width="300" height="225" autoplay muted></video>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <script>
+    const video = document.getElementById('video');
+    const text = document.getElementById('text');
+
+    Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+      faceapi.nets.faceExpressionNet.loadFromUri('/models')
+    ]).then(startVideo);
+
+    function startVideo() {
+      navigator.mediaDevices.getUserMedia({ video: {} })
+        .then(stream => video.srcObject = stream)
+        .catch(err => console.error(err));
+    }
+
+    video.addEventListener('play', () => {
+      const canvas = faceapi.createCanvasFromMedia(video);
+      document.body.append(canvas);
+      const displaySize = { width: video.width, height: video.height };
+      faceapi.matchDimensions(canvas, displaySize);
+
+      setInterval(async () => {
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
+        if (detections.length > 0) {
+          const expr = detections[0].expressions;
+          const dominant = Object.entries(expr).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+          text.className = dominant in ['happy', 'sad', 'angry'] ? dominant : 'neutral';
+        } else {
+          text.className = 'neutral';
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
