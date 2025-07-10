@@ -19,45 +19,24 @@
 
     #text {
       font-size: 3rem;
-      transition: all 0.5s ease;
+      transition: all 0.2s linear;
       text-align: center;
       padding: 1rem;
     }
 
-    .happy {
-      font-variation-settings: "wght" 800, "slnt" -10;
-      color: #ffd166;
-    }
-
-    .sad {
-      font-variation-settings: "wght" 300, "slnt" 10;
-      color: #118ab2;
-    }
-
-    .angry {
-      font-variation-settings: "wght" 900, "slnt" 0;
-      color: #ef476f;
-    }
-
-    .neutral {
-      font-variation-settings: "wght" 400, "slnt" 0;
-      color: #ffffff;
-    }
-
     video {
-  visibility: hidden;
-  width: 0;
-  height: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
+      visibility: hidden;
+      width: 0;
+      height: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght@-10..0,300..900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="text" class="neutral">Tu rostro cambia la tipografía.</div>
+  <div id="text">Tu rostro cambia la tipografía.</div>
   <video id="video" width="300" height="225" autoplay muted></video>
 
   <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
@@ -67,11 +46,9 @@
       const text = document.getElementById('text');
 
       function startVideo() {
-        console.log("Modelos cargados. Solicitando cámara…");
         navigator.mediaDevices.getUserMedia({ video: true })
           .then(stream => {
             video.srcObject = stream;
-            console.log("Cámara activa.");
           })
           .catch(err => console.error("Error con la cámara:", err));
       }
@@ -92,17 +69,27 @@
             .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
             .withFaceExpressions();
 
-          console.log("Detección:", detection);
-
           if (detection && detection.expressions) {
             const expr = detection.expressions;
+
+            // Variables tipográficas interpoladas
+            const wght = 300 + 600 * expr.happy + 400 * expr.angry - 200 * expr.sad;
+            const slnt = -10 * expr.happy + 10 * expr.sad;
+
+            text.style.fontVariationSettings = `"wght" ${wght.toFixed(1)}, "slnt" ${slnt.toFixed(1)}`;
+
+            // Opcional: cambio de color según la emoción dominante
             const dominant = Object.entries(expr).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-            console.log("Emoción detectada:", dominant);
-            text.className = ['happy', 'sad', 'angry'].includes(dominant) ? dominant : 'neutral';
-          } else {
-            text.className = 'neutral';
+            switch (dominant) {
+              case 'happy': text.style.color = '#ffd166'; break;
+              case 'sad': text.style.color = '#118ab2'; break;
+              case 'angry': text.style.color = '#ef476f'; break;
+              default: text.style.color = '#ffffff'; break;
+            }
+
+            console.log("Interpolado → wght:", wght.toFixed(1), "slnt:", slnt.toFixed(1), "dominant:", dominant);
           }
-        }, 1000);
+        }, 100);
       });
     });
   </script>
